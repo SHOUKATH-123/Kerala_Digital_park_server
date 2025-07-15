@@ -8,7 +8,7 @@ class UserController {
     #jwtToken;
 
     constructor(userUseCase, jwtToken) {
-        this.#userUseCase = userUseCase
+        this.#userUseCase = userUseCase 
         this.#jwtToken = jwtToken
     }
     async saveUserData(req, res, next) {
