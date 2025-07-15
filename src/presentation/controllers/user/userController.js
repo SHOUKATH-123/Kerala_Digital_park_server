@@ -5,7 +5,7 @@ import { userSchema, setNewPasswordSchema } from '../../../security/validation.j
 class UserController {
 
     #userUseCase
-    #jwtToken
+    #jwtToken;
 
     constructor(userUseCase, jwtToken) {
         this.#userUseCase = userUseCase
