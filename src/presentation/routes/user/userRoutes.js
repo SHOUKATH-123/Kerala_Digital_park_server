@@ -48,7 +48,7 @@ userRouter.post('/verifyResetOtp', (req, res, next) => {
 userRouter.post('/setNewPassword', (req, res, next) => {
     userController.setNewPassword(req, res, next)
 })
-userRouter.put('/logout', (req, res, next) => {
+userRouter.post('/logout', (req, res, next) => {
     userController.logout(req, res, next);
 
 })

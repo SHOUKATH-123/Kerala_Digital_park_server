@@ -25,7 +25,7 @@ class UserController {
             return res.status(response.status).json({ message: response.message });
 
         } catch (error) {
-            next()
+            next(error)
         }
     }
     async login(req, res, next) {
@@ -41,7 +41,7 @@ class UserController {
             return res.status(response.status).json({ message: response.message, loginData: response.data ? response.data : '' });
 
         } catch (error) {
-            next()
+            next(error)
         }
     }
     async otpVerification(req, res, next){
@@ -57,7 +57,7 @@ class UserController {
 
             return res.status(response.status).json({ message: response.message })
         } catch (error) {
-            next()
+            next(error)
         }
     }
     async sendVerifyOtp(req, res, next) {
@@ -72,7 +72,7 @@ class UserController {
             return res.status(response.status).json({ message: response.message })
 
         } catch (error) {
-            next()
+            next(error)
         }
     }
 
@@ -89,7 +89,7 @@ class UserController {
 
 
         } catch (error) {
-            next()
+            next(error)
         }
     }
 
@@ -140,7 +140,7 @@ class UserController {
             this.#jwtToken.logout(res);
             return res.status(200).json({ message: 'Logout successful.' })
         } catch (error) {
-            next()
+            next(error)
         }
     }
 

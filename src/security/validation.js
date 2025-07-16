@@ -26,6 +26,17 @@ export const setNewPasswordSchema = Joi.object({
             'string.pattern.base': 'Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.'
         })
 });
+export const loginSchemaForAdmin = Joi.object({
+  email: Joi.string().email().trim().required(),
+  password: Joi.string()
+    .min(6).trim()
+    .required()
+    .messages({
+      'string.empty': 'Password is required.',
+      'string.min': 'Password must be at least 6 characters long.',
+      'any.required': 'Password is required.',
+    }),
+});
 
 const getCountriesWithPhoneCodes = () => {
     return countries
