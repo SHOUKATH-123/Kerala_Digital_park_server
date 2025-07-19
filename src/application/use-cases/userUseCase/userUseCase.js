@@ -131,7 +131,7 @@ class UserUseCase {
             return {
                 status: 200,
                 message: 'Login successful',
-                data: userData._id
+                data: {userId:userData._id,email:userData.email}
             };
         } catch (error) {
             return {

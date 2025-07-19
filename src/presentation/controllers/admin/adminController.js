@@ -1,4 +1,4 @@
-import { loginSchemaForAdmin } from '../../../security/validation.js'
+import { loginSchema } from '../../../security/validation.js'
 
 class AdminController {
     #adminUseCase
@@ -11,7 +11,7 @@ class AdminController {
     async login(req, res, next) {
         try {
             // console.log(req.body);
-            const { error } = loginSchemaForAdmin.validate(req.body, { abortEarly: false });
+            const { error } = loginSchema.validate(req.body, { abortEarly: false });
 
             if (error) {
                 return res.status(400).json({

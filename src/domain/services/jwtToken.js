@@ -19,7 +19,7 @@ class JwtToken {
 
         // Sign the JWT with secret and expiry
         const token = jwt.sign(payload, config.JWT_SECRET, { expiresIn: config.JWT_EXPIRES });
-        //  console.log(token,userId);
+        //  console.log(token,userId); 
 
         // Set the token in an HTTP-only cookie
         res.cookie('token', token, {
@@ -30,7 +30,7 @@ class JwtToken {
         });
     }
     logout(res) {
-        res.clearCookie('token', {
+        res.clearCookie('token', { 
             httpOnly: true,
             secure: false,    // true in production with HTTPS
             sameSite: 'lax'

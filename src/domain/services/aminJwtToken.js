@@ -3,13 +3,14 @@ import config from '../../config/env.js';
 
 class AdminJwtToken {
     /**
-     * Generate a JWT token, set it in httpOnly cookie
+     * Generate a JWT token, set it in httpOnly cookie 
      * @param {string} userId - User's ID
      * @param {Response} res - Express response object
      * @returns {void}
      */
     generateToken(userId, res) {
-
+       
+        
         if (!userId) {
             throw new Error('User ID is required to generate token.');
         }

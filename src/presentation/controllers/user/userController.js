@@ -1,4 +1,4 @@
-import { userSchema, setNewPasswordSchema } from '../../../security/validation.js'
+import { userSchema, setNewPasswordSchema, loginSchema} from '../../../security/validation.js'
 
 
 
@@ -8,7 +8,7 @@ class UserController {
     #jwtToken;
 
     constructor(userUseCase, jwtToken) {
-        this.#userUseCase = userUseCase 
+        this.#userUseCase = userUseCase
         this.#jwtToken = jwtToken
     }
     async saveUserData(req, res, next) {
@@ -30,10 +30,19 @@ class UserController {
     }
     async login(req, res, next) {
         try {
+
+            const { error } = loginSchema.validate(req.body, { abortEarly: false });
+
+            if (error) {
+                return res.status(400).json({
+                    message: 'Validation failed.',
+                    errors: error.details.map(detail => detail.message),
+                });
+            }
             const response = await this.#userUseCase.login(req.body);
 
             if (response.status == 200) {
-              
+
                 this.#jwtToken.generateToken(response.data, res);
                 return res.status(200).json({ message: response.message, userData: response.data })
             }
@@ -44,14 +53,14 @@ class UserController {
             next(error)
         }
     }
-    async otpVerification(req, res, next){
+    async otpVerification(req, res, next) {
         try {
 
             const response = await this.#userUseCase.otpVerification(req.body);
 
             if (response.status == 200) {
                 this.#jwtToken.generateToken(response.data.userId, res);
-                 
+
                 return res.status(200).json({ message: response.message, userData: response.data })
             }
 
@@ -135,7 +144,7 @@ class UserController {
             next(error)
         }
     }
-    async logout(_,res,next){
+    async logout(_, res, next) {
         try {
             this.#jwtToken.logout(res);
             return res.status(200).json({ message: 'Logout successful.' })
