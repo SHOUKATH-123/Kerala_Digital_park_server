@@ -115,6 +115,21 @@ class AdminCategoryUseCase {
             };
         }
     }
+    async getAllUsers(reqData){
+        try {
+            const { limit, page } = reqData;
+            const userData = await this.#adminCategoryRepository.getAllUsers(limit, page);
+
+            return userData
+            
+        } catch (error) {
+            return {
+                status: error.status || 500,
+                message: error.message || 'An error occurred in get all users. UseCase'
+            };
+            
+        }
+    }
 }
 
 export default AdminCategoryUseCase;

@@ -35,6 +35,9 @@ categoryRouter.delete('/category/delete/:id',adminAuthentication.verifyAdmin,(re
 categoryRouter.put('/category/update',adminAuthentication.verifyAdmin,(req,res,next)=>{
     adminCategoryController.updateCategory(req,res,next)
 })
+categoryRouter.get('/users',adminAuthentication.verifyAdmin,(req,res,next)=>{
+    adminCategoryController.getAllUsers(req,res,next);
+})
 
 
 

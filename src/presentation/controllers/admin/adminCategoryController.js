@@ -86,6 +86,18 @@ class AdminCategoryController {
             next(error)
         }
     }
+    async getAllUsers(req,res,next){
+        try {
+           
+            const response = await this.#adminCategoryUseCase.getAllUsers(req.query);
+            if (response.status == 200) {
+                return res.status(200).json({ message: response.message, users: response.data, pagination: response.pagination });
+            }
+            return res.status(response.status).json({ message: response.message });
+        } catch (error) {
+            next(error)
+        }
+    }
 }
 
 export default AdminCategoryController;

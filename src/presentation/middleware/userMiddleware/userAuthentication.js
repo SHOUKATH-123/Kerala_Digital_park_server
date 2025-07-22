@@ -1,51 +1,48 @@
 
 import jwt from 'jsonwebtoken';
 import config from '../../../config/env.js'
-import AdminJwtToken from '../../../domain/services/aminJwtToken.js'
+import UserToken from '../../../domain/services/jwtToken.js'
 
-const adminJwtToken = new AdminJwtToken()
+const userToken = new UserToken()
 
-class AdminAuthentication {
+class UserAuthentication {
 
-    async verifyAdmin(req, res, next) {
+    async verifyUser(req, res, next){
         try {
-
-
-            const token = req.cookies?.AdminToken;
+            const token = req.cookies?.token;
 
             if (!token) {
-                return res.status(401).json({
+                return res.status(498).json({
                     message: 'No authentication token found. Please log in.'
                 });
             }
             // console.log(token);
             const decoded = jwt.verify(token, config.JWT_SECRET);
-            req.admin = decoded.userId;
+            req.user = decoded.userId;
 
             const now = Math.floor(Date.now() / 1000);
             const remainingSeconds = decoded.exp - now;
             const remainingDays = remainingSeconds / (24 * 60 * 60);
 
-
+           
             //regenerate new token is remaining days are 10 days
             if (remainingDays <= 10) {
-                adminJwtToken.generateToken(decoded.userId, res);
+                userToken.generateToken(decoded.userId, res);
             }
-            next();
+            next(); 
 
         } catch (error) {
-            res.clearCookie('AdminToken', {
+            res.clearCookie('token', {
                 httpOnly: true,
-                secure: false,    // true in production with HTTPS
+                secure: false,
                 sameSite: 'lax'
             });
-            return res.status(401).json({
+            return res.status(498).json({
                 message: 'Invalid or expired authentication token. Please log in again.'
             });
         }
-
-
     }
+
 }
 
-export default AdminAuthentication;
+export default UserAuthentication

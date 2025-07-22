@@ -1,5 +1,6 @@
 import Category from "../../../infrastructure/database/models/categoryModel.js";
 import Product from "../../../infrastructure/database/models/productModel.js";
+import User from '../../../infrastructure/database/models/userModel.js'
 import Review from "../../../infrastructure/database/models/productReview.js"
 import AwsS3Bucket from '../../services/awsS3Bucket.js';
 
@@ -163,10 +164,10 @@ class AdminCategoryRepository {
                 }
             }
             const updateObject = {
-                [field]: newData,  
-                
+                [field]: newData,
+
             };
-            const updateCategory = await Category.findByIdAndUpdate( id , { $set: updateObject }, { new: true });
+            const updateCategory = await Category.findByIdAndUpdate(id, { $set: updateObject }, { new: true });
 
             return updateCategory
 
@@ -174,6 +175,39 @@ class AdminCategoryRepository {
             throw {
                 status: error.status || 500,
                 message: error.message || 'Update Category is filed. in adminCategoryRepository'
+            };
+        }
+    }
+    async getAllUsers(limit, page) {
+        try {
+            const pageNumber = parseInt(page) || 1;
+            const limitNumber = parseInt(limit) || 10;
+            const skip = (pageNumber - 1) * limitNumber;
+
+            const totalCount = await User.countDocuments();
+            const users = await User.find()
+                .select('firstName lastName email country createdAt')
+                .skip(skip)
+                .limit(limitNumber)
+                .sort({ createdAt: -1 });
+
+            const totalPages = Math.ceil(totalCount / limitNumber);
+
+            return {
+                status: 200,
+                message: 'Users fetched successfully.',
+                data: users,
+                pagination: {
+                    totalItems: totalCount,
+                    currentPage: pageNumber,
+                    totalPages,
+                    pageSize: limitNumber
+                }
+            };
+        } catch (error) {
+            throw {
+                status: error.status || 500,
+                message: error.message || 'Fetch users failed.'
             };
         }
     }
