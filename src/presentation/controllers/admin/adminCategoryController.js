@@ -1,4 +1,4 @@
-import { categorySchema,updateCategorySchema } from '../../../security/productDataValidation.js'
+import { categorySchema, updateCategorySchema } from '../../../security/productDataValidation.js'
 
 class AdminCategoryController {
     #adminCategoryUseCase
@@ -75,7 +75,7 @@ class AdminCategoryController {
                 }
                 const response = await this.#adminCategoryUseCase.updateCategory(req.body);
                 if (response.status == 200) {
-                    return res.status(200).json({ message: response.message,data:response.data,updated:response.updated });
+                    return res.status(200).json({ message: response.message, data: response.data, updated: response.updated });
                 }
                 return res.status(response.status).json({ message: response.message });
             } catch (error) {
@@ -86,14 +86,63 @@ class AdminCategoryController {
             next(error)
         }
     }
-    async getAllUsers(req,res,next){
+    async searchCategory(req, res, next) {
         try {
-           
+            const response = await this.#adminCategoryUseCase.searchValue(req.params.search)
+            if (response.status == 200) {
+                return res.status(200).json({ message: response.message, categoryData: response.data })
+            }
+            return res.status(response.status).json({ message: response.message });
+        } catch (error) {
+            next(error)
+        }
+    }
+    async getAllUsers(req, res, next) {
+        try {
+
             const response = await this.#adminCategoryUseCase.getAllUsers(req.query);
             if (response.status == 200) {
                 return res.status(200).json({ message: response.message, users: response.data, pagination: response.pagination });
             }
             return res.status(response.status).json({ message: response.message });
+        } catch (error) {
+            next(error)
+        }
+    }
+    async blockUser(req, res, next) {
+        try {
+            const response = await this.#adminCategoryUseCase.blockUser(req.query);
+            if (response.status == 200) {
+                return res.status(200).json({ message: response.message });
+            }
+            return res.status(response.status).json({ message: response.message });
+        } catch (error) {
+            next(error)
+        }
+    }
+    async searchUser(req, res, next) {
+        try {
+            const search = req.params.value
+
+            const response = await this.#adminCategoryUseCase.searchUser(search);
+            if (response.status == 200) {
+                return res.status(200).json({ message: response.message, users: response.data });
+            }
+            return res.status(response.status).json({ message: response.message });
+        } catch (error) {
+            next(error)
+        }
+    }
+    async takeAllUserData(req, res, next) {
+        try {
+            const userId = req.params.id
+            // console.log(userId);
+            const response = await this.#adminCategoryUseCase.takeUserDetails(userId);
+            if (response.status == 200) {
+                return res.status(200).json({ message: response.message, user: response.data });
+            }
+            return res.status(response.status).json({ message: response.message });
+
         } catch (error) {
             next(error)
         }

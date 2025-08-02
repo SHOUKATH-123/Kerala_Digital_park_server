@@ -35,8 +35,20 @@ categoryRouter.delete('/category/delete/:id',adminAuthentication.verifyAdmin,(re
 categoryRouter.put('/category/update',adminAuthentication.verifyAdmin,(req,res,next)=>{
     adminCategoryController.updateCategory(req,res,next)
 })
+categoryRouter.get('/category/:search',adminAuthentication.verifyAdmin,(req,res,next)=>{
+    adminCategoryController.searchCategory(req,res,next);
+})
 categoryRouter.get('/users',adminAuthentication.verifyAdmin,(req,res,next)=>{
     adminCategoryController.getAllUsers(req,res,next);
+}) 
+categoryRouter.patch('/blockUsers',adminAuthentication.verifyAdmin,(req,res,next)=>{
+    adminCategoryController.blockUser(req,res,next);
+})
+categoryRouter.get('/search/:value',adminAuthentication.verifyAdmin,(req,res,next)=>{
+    adminCategoryController.searchUser(req,res,next);
+})
+categoryRouter.get('/userData/:id',adminAuthentication.verifyAdmin,(req,res,next)=>{
+    adminCategoryController.takeAllUserData(req,res,next);
 })
 
 

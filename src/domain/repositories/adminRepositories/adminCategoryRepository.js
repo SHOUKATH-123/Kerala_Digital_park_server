@@ -1,6 +1,7 @@
 import Category from "../../../infrastructure/database/models/categoryModel.js";
 import Product from "../../../infrastructure/database/models/productModel.js";
 import User from '../../../infrastructure/database/models/userModel.js'
+import Address from '../../../infrastructure/database/models/addressModel.js'
 import Review from "../../../infrastructure/database/models/productReview.js"
 import AwsS3Bucket from '../../services/awsS3Bucket.js';
 
@@ -22,7 +23,13 @@ class AdminCategoryRepository {
 
             const data = await newCategory.save()
 
-            return data;
+            return {
+                _id: data._id,
+                name: data.name,
+                description: data.description,
+                isListed: data.isListed,
+                productCount: 0
+            };
 
         } catch (error) {
             throw {
@@ -31,26 +38,54 @@ class AdminCategoryRepository {
             };
         }
     }
-    async takeAllCategoryData(limit, page) {
+    async takeAllCategoryData(limit, page, sort) {
         try {
-            // ✅ Convert to number and handle defaults
             const pageNumber = parseInt(page) || 1;
             const limitNumber = parseInt(limit) || 10;
             const skip = (pageNumber - 1) * limitNumber;
 
-            // ✅ Count total categories
             const totalCount = await Category.countDocuments();
 
-            // ✅ Fetch paginated categories
-            const categories = await Category.find()
-                .skip(skip)
-                .limit(limitNumber)
-                .sort({ createdAt: -1 }); // optional: sort newest first
 
-            // ✅ Calculate total pages
+            const pipeline = [
+                {
+                    $lookup: {
+                        from: 'products',
+                        localField: '_id',
+                        foreignField: 'category',
+                        as: 'products'
+                    }
+                },
+                {
+                    $addFields: {
+                        productCount: { $size: '$products' }
+                    }
+                },
+                {
+                    $project: {
+                        name: 1,
+                        description: 1,
+                        isListed: 1,
+                        productCount: 1
+                    }
+                }
+            ];
+
+            if (sort === 'assenting') {
+                pipeline.push({ $sort: { productCount: 1, createdAt: -1 } });
+            } else if (sort === 'dissenting') {
+                pipeline.push({ $sort: { productCount: -1, createdAt: -1 } });
+            } else {
+                pipeline.push({ $sort: { _id: -1 } });
+            }
+
+            pipeline.push({ $skip: skip });
+            pipeline.push({ $limit: limitNumber });
+
+            const categories = await Category.aggregate(pipeline);
+
             const totalPages = Math.ceil(totalCount / limitNumber);
 
-            // ✅ Return full pagination info
             return {
                 status: 200,
                 message: 'Categories fetched successfully.',
@@ -62,6 +97,7 @@ class AdminCategoryRepository {
                     pageSize: limitNumber
                 }
             };
+
         } catch (error) {
             throw {
                 status: error.status || 500,
@@ -167,14 +203,76 @@ class AdminCategoryRepository {
                 [field]: newData,
 
             };
-            const updateCategory = await Category.findByIdAndUpdate(id, { $set: updateObject }, { new: true });
+            const updateCategory = await Category.findByIdAndUpdate(
+                id,
+                { $set: updateObject },
+                { new: true, select: 'name description isListed' }
+            );
 
-            return updateCategory
+            if (!updateCategory) {
+                throw {
+                    status: 404,
+                    message: 'Category not found'
+                };
+            }
+
+            // Count products using this category
+            const productCount = await Product.countDocuments({ category: id });
+
+            return {
+                name: updateCategory.name,
+                description: updateCategory.description,
+                isListed: updateCategory.isListed,
+                productCount
+            };
 
         } catch (error) {
             throw {
                 status: error.status || 500,
                 message: error.message || 'Update Category is filed. in adminCategoryRepository'
+            };
+        }
+    }
+    async searchCategory(value) {
+        try {
+            const categories = await Category.aggregate([
+                {
+                    $match: {
+                        $or: [
+                            { name: { $regex: value, $options: 'i' } },
+                            { description: { $regex: value, $options: 'i' } }
+                        ]
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'products',
+                        localField: '_id',
+                        foreignField: 'category',
+                        as: 'products'
+                    }
+                },
+                {
+                    $addFields: {
+                        productCount: { $size: '$products' }
+                    }
+                },
+                {
+                    $project: {
+                        name: 1,
+                        description: 1,
+                        isListed: 1,
+                        productCount: 1
+                    }
+                },
+                { $limit: 10 }
+            ]);
+
+            return categories;
+        } catch (error) {
+            throw {
+                status: error.status || 500,
+                message: error.message || 'Search categories failed.'
             };
         }
     }
@@ -186,7 +284,7 @@ class AdminCategoryRepository {
 
             const totalCount = await User.countDocuments();
             const users = await User.find()
-                .select('firstName lastName email country createdAt')
+                .select('firstName lastName email country isVerified isBlocked createdAt')
                 .skip(skip)
                 .limit(limitNumber)
                 .sort({ createdAt: -1 });
@@ -208,6 +306,83 @@ class AdminCategoryRepository {
             throw {
                 status: error.status || 500,
                 message: error.message || 'Fetch users failed.'
+            };
+        }
+    }
+    async userBlock(userId, action) {
+        try {
+            const Blocked = action == 'true' ? true : false;
+
+            const updatedUser = await User.findByIdAndUpdate(
+                userId,
+                { isBlocked: Blocked },
+                { new: true }
+            );
+
+            if (!updatedUser) {
+                throw { status: 404, message: 'User not found' };
+            }
+
+            return
+
+        } catch (error) {
+            throw {
+                status: error.status || 500,
+                message: error.message || 'Fetch users failed.'
+            };
+        }
+    }
+    async searchUser(query) {
+        try {
+            const searchQuery = {
+                $or: [
+                    { firstName: { $regex: query, $options: 'i' } },
+                    { lastName: { $regex: query, $options: 'i' } },
+                    { email: { $regex: query, $options: 'i' } },
+                    {
+                        $expr: {
+                            $regexMatch: {
+                                input: { $concat: ["$firstName", " ", "$lastName"] },
+                                regex: query,
+                                options: "i"
+                            }
+                        }
+                    }
+                ]
+            };
+
+            const users = await User.find(searchQuery)
+                .select('firstName lastName email country isVerified isBlocked createdAt')
+                .limit(10);
+
+            return users;
+        } catch (error) {
+            throw {
+                status: error.status || 500,
+                message: error.message || 'Search users failed.'
+            };
+        }
+    }
+    async takeUserDetails(userId) {
+        try {
+            const user = await User.findById(userId)
+                .select('firstName lastName email country isVerified isBlocked createdAt updatedAt');
+
+            if (!user) {
+                throw { status: 404, message: 'User not found' };
+            }
+
+            const addresses = await Address.find({ user: userId });
+
+
+            return {
+                user,
+                addresses
+            };
+        } catch (error) {
+            throw {
+                status: error.status || 500,
+                message: error.message || 'tke user details failed.'
             };
         }
     }

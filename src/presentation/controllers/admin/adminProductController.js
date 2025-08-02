@@ -118,5 +118,31 @@ class AdminProductController {
          next(error)
       }
    }
+   async takeProductCategory(req,res,next){
+      try {
+         const response=await this.#adminProductUseCase.takeProductCategory()
+         if(response.status==200){
+            return res.status(200).json({message:response.message,categoryData:response.data})
+         }
+         return res.status(response.status).json({message:response.message})
+      } catch (error) {
+         next(error)
+      }
+   }
+   async searchProduct(req,res,next){
+      try {
+         const value=req.params.value
+          const response = await this.#adminProductUseCase.searchProduct(value);
+         if (response.status == 200) {
+            return res.status(200).json({ message: response.message, productData: response.data });
+         }
+         return res.status(response.status).json({ message: response.message });
+
+         
+         
+      } catch (error) {
+         next(error)
+      }
+   }
 }
 export default AdminProductController;

@@ -11,13 +11,14 @@ class AdminUseCase {
       const { email, password } = LoginData;
       
       const AdminData = await this.#adminRepository.login(email, password);
-
+      
       return {
         status: 200,
         message:'Login successful. Welcome, Admin!.',
         data: {
           adminId: AdminData._id,
-          email: AdminData.email
+          email: AdminData.email,
+          adminName: AdminData.name,
         }
       }
 

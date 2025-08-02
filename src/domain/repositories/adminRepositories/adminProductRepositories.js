@@ -30,7 +30,7 @@ class AdminProductRepositories {
             if (checkNameIsExists) {
                 throw {
                     status: 400,
-                    message: `Product name "${productName}" already exists. Please choose a different name.`
+                    message: `Product name already exists. Please choose a different name.`
                 };
             }
 
@@ -62,7 +62,7 @@ class AdminProductRepositories {
             };
         }
     }
-    async takeAllProduct(limit, page) {
+    async takeAllProduct(limit, page, sortByStock) {
         try {
             const pageNumber = parseInt(page) || 1;
             const limitNumber = parseInt(limit) || 10;
@@ -70,13 +70,28 @@ class AdminProductRepositories {
 
             // ✅ Count total categories
             const totalCount = await Product.countDocuments();
-
+            const outOfStock = await Product.countDocuments({ stock: { $lte: 0 } });
             // ✅ Fetch paginated categories
+
+            let sortCriteria = { createdAt: -1 }; // default: newest first
+
+            switch (sortByStock) {
+                case 'descending':
+                    sortCriteria = { stock: -1, createdAt: -1 }; // High to Low stock, then newest
+                    break;
+                case 'ascending':
+                    sortCriteria = { stock: 1, createdAt: -1 }; // Low to High stock, then newest
+                    break;
+                case '':
+                default:
+                    sortCriteria = { createdAt: -1 }; // Default sorting by creation date
+                    break;
+            }
             const products = await Product.find()
                 .populate('category', 'name')
                 .skip(skip)
                 .limit(limitNumber)
-                .sort({ createdAt: -1 }); // optional: sort newest first
+                .sort(sortCriteria ); // optional: sort newest first
 
             // ✅ Calculate total pages
             const totalPages = Math.ceil(totalCount / limitNumber);
@@ -90,7 +105,8 @@ class AdminProductRepositories {
                     totalItems: totalCount,
                     currentPage: pageNumber,
                     totalPages,
-                    pageSize: limitNumber
+                    pageSize: limitNumber,
+                    outOfStock
                 }
             };
 
@@ -243,6 +259,53 @@ class AdminProductRepositories {
             throw {
                 status: error.status || 500,
                 message: error.message || ' Product updating failed in admin product repositories.'
+            };
+        }
+    }
+    async takeCategory() {
+        try {
+            const data = await Category.find({ isListed: true }, { name: 1 })
+            return data;
+
+        } catch (error) {
+            throw {
+                status: error.status || 500,
+                message: error.message || ' take category data failed in admin product repositories.'
+            };
+        }
+    }
+    async searchProduct(key) {
+        try {
+            const searchKey = key.trim();
+
+            // First, find categories that match the search key
+            const matchingCategories = await Category.find({
+                name: { $regex: searchKey, $options: 'i' }
+            }).select('_id');
+
+            const categoryIds = matchingCategories.map(cat => cat._id);
+
+            // Build search query including category search
+            let searchQuery = {
+                $or: [
+                    { name: { $regex: searchKey, $options: 'i' } },
+                    { brand: { $regex: searchKey, $options: 'i' } },
+                    ...(categoryIds.length > 0 ? [{ category: { $in: categoryIds } }] : [])
+                ]
+            };
+
+            const products = await Product.find(searchQuery)
+                .populate('category', 'name')
+                .limit(10)
+                .sort({ createdAt: -1 });
+
+            return products;
+
+
+        } catch (error) {
+            throw {
+                status: error.status || 500,
+                message: error.message || 'Search Product is failed in admin product repositories.'
             };
         }
     }

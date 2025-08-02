@@ -23,12 +23,12 @@ class AdminController {
             const response = await this.#adminUseCase.login(req.body);
             if (response.status == 200) {
 
-                await this.#adminJwtToken.generateToken(response.data.adminId, res);
+                this.#adminJwtToken.generateToken(response.data.adminId, res);       
 
-                return res.status(200).json({ message: response.message, userData: response.data })
+                return res.status(200).json({ message: response.message, adminData: response.data })
             }
 
-            return res.status(response.status).json({ message: response.message }); F
+            return res.status(response.status).json({ message: response.message }); 
 
         } catch (error) {
             next(error)

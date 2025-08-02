@@ -21,21 +21,23 @@ const orderSchema = new mongoose.Schema(
       },
     ],
     shippingAddress: {
-      address: { type: String, required: true },
-      city: { type: String, required: true },
-      state: { type: String },
-      postalCode: { type: String, required: true },
-      country: { type: String, required: true },
+      address: { type: String, default:''   },
+      city: { type: String, default:'' },
+      state: { type: String,default:'' },
+      postalCode: { type: String, default:'' },
+      country: { type: String, default:'' },
+      phone: { type: String, default:'' },
+     
     },
     paymentMethod: {
       type: String,
-      required: true,
+      default:''
     },
     paymentResult: {
-      id: String,
-      status: String,
-      update_time: String,
-      email_address: String,
+      id: { type: String, default:'' },
+      status: { type: String, default:'' },
+      update_time: { type: String, default:'' },
+      email_address: { type: String, default:'' },
     },
     taxPrice: {
       type: Number,
@@ -70,8 +72,8 @@ const orderSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ['Processing', 'Shipped', 'Delivered', 'Cancelled'],
-      default: 'Processing',
+      enum: ['Create','Processing', 'Shipped', 'Delivered', 'Cancelled'],
+      default: 'Create',
     },
   },
   {
@@ -80,4 +82,5 @@ const orderSchema = new mongoose.Schema(
 );
 
 const Order = mongoose.model('Order', orderSchema);
+
 export default Order;

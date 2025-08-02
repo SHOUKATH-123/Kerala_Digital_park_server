@@ -40,8 +40,8 @@ class UserUseCase {
 
             return {
                 status: 200,
-                message: 'Registration successful.',
-                // message: 'Registration successful. An OTP has been sent to your email for verification.',
+                // message: 'Registration successful.',
+                message: 'Registration successful. An OTP has been sent to your email for verification.',
                 data: { email: savedUser.email, userId: savedUser._id }
             };
 

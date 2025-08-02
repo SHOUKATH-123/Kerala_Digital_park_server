@@ -33,7 +33,7 @@ export const productSchema = Joi.object({
   description:Joi.string().allow('').optional().messages({
     'string.base': 'Description must be a string.'
   }),
-  price: Joi.number().greater(1).required().messages({
+  price: Joi.number().greater(0).required().messages({
     'any.required': 'Price is required',
     'number.base': 'Price must be a number',
     'number.greater': 'Price must be greater than 1'
@@ -46,7 +46,7 @@ export const productSchema = Joi.object({
     'any.required': 'Brand is required',
     'string.base': 'Brand must be a string'
   }),
-  stock: Joi.number().greater(1).required().messages({
+  stock: Joi.number().greater(0).required().messages({
     'any.required': 'Stock is required',
     'number.base': 'Stock must be a number',
     'number.greater': 'Stock must be greater than 1'

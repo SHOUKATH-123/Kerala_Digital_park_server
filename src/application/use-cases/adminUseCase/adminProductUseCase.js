@@ -45,8 +45,8 @@ class AdminProductUseCase {
     }
     async takeAllProduct(reqData) {
         try {
-            const { limit, page } = reqData
-            const productsData = await this.#adminProductRepositories.takeAllProduct(limit, page);
+            const { limit, page,stock } = reqData
+            const productsData = await this.#adminProductRepositories.takeAllProduct(limit, page,stock);
             return productsData;
         } catch (error) {
             return {
@@ -115,15 +115,12 @@ class AdminProductUseCase {
                     }
                 }
             }
-
             return {
                 status: 200,
                 message: 'Product updating successfully.',
                 updated: update ? true : false,
                 data: update ? updatedProduct : takeProduct
             }
-
-
         } catch (error) {
             return {
                 status: error.status || 500,
@@ -133,14 +130,13 @@ class AdminProductUseCase {
     }
     async updateProductImage(productData, images) {
         try {
-
             if (!mongoose.Types.ObjectId.isValid(productData.productId)) {
                 throw { status: 400, message: 'Invalid Product ID format' };
             }
             const imageArray = JSON.parse(productData.productImage);
 
             if ((!Array.isArray(imageArray) || imageArray.length < 1) && images.length < 1) {
-                
+
                 throw {
                     status: 400,
                     message: 'At least one product image must be provided'
@@ -151,7 +147,7 @@ class AdminProductUseCase {
             const productObject = takeProduct.toObject();
             productObject.category = takeProduct.category.toString();
 
-           
+
             let update = false
             let updatedData = null
 
@@ -159,8 +155,6 @@ class AdminProductUseCase {
                 updatedData = await this.#adminProductRepositories.imageUpdating(takeProduct._id, imageArray);
                 update = true
             }
-
-
 
 
             if (images.length > 0) {
@@ -178,10 +172,10 @@ class AdminProductUseCase {
 
             if (commonImages && commonImages.length > 0) {
                 for (const imageUrl of commonImages) {
-                    await awsS3Bucket.deleteImageFromAwsS3(imageUrl);  
+                    await awsS3Bucket.deleteImageFromAwsS3(imageUrl);
                 }
             }
-            
+
             return {
                 status: 200,
                 message: 'Product updating successfully.',
@@ -193,6 +187,45 @@ class AdminProductUseCase {
             return {
                 status: error.status || 500,
                 message: error.message || 'An error occurred in update productImage. in UseCase'
+            };
+        }
+    }
+    async takeProductCategory() {
+        try {
+            const categories = await this.#adminProductRepositories.takeCategory()
+            return {
+                status: 200,
+                message: 'successful.',
+                data: categories
+            }
+        } catch (error) {
+            return {
+                status: error.status || 500,
+                message: error.message || 'An error occurred in take category data. in UseCase'
+            };
+        }
+    }
+    async searchProduct(key) {
+        try {
+            if (!key) {
+                throw {
+                    status: 400,
+                    message: 'Search key is required.',
+                };
+            }
+
+            const productData = await this.#adminProductRepositories.searchProduct(key);
+
+            return {
+                status:200,
+                message:'Product searching successful.',
+                data:productData
+            }
+
+        } catch (error) {
+            return {
+                status: error.status || 500,
+                message: error.message || 'An error occurred in take category data. in UseCase'
             };
         }
     }

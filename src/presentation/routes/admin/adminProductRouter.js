@@ -32,8 +32,6 @@ productRouter.post('/addProduct',adminAuthentication.verifyAdmin, upload.array('
     adminProductController.addNewProduct(req, res, next); 
 });
 productRouter.get('/products',adminAuthentication.verifyAdmin,(req,res,next)=>{
-    // console.log('worked');
-    
     adminProductController.allProducts(req, res, next); 
 });
 productRouter.patch('/product/listing',adminAuthentication.verifyAdmin,(req,res,next)=>{
@@ -47,6 +45,12 @@ productRouter.put('/product/update',adminAuthentication.verifyAdmin ,(req,res,ne
 })
 productRouter.put('/product/updateImage',adminAuthentication.verifyAdmin, upload.array('images',10),(req,res,next)=>{
     adminProductController.updateProductImage(req,res,next);
+})
+productRouter.get('/productCategory',adminAuthentication.verifyAdmin,(req,res,next)=>{
+    adminProductController.takeProductCategory(req,res,next)
+})
+productRouter.get('/product/search/:value',adminAuthentication.verifyAdmin,(req,res,next)=>{
+    adminProductController.searchProduct(req,res,next);
 })
 
 

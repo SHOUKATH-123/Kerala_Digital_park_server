@@ -19,13 +19,7 @@ class AdminCategoryUseCase {
             return {
                 status: 200,
                 message: ' successfully Added new Category',
-                data: {
-
-                    categoryName: saveCategory.name,
-                    _id: saveCategory._id,
-                    description: saveCategory.description,
-                    isListed: saveCategory.isListed
-                }
+                data: saveCategory
             };
 
         } catch (error) {
@@ -37,8 +31,8 @@ class AdminCategoryUseCase {
     }
     async takeAllCategory(reqData) {
         try {
-            const { limit, page } = reqData;
-            const categoryData = await this.#adminCategoryRepository.takeAllCategoryData(limit, page);
+            const { limit, page, sort } = reqData;
+            const categoryData = await this.#adminCategoryRepository.takeAllCategoryData(limit, page, sort);
             return categoryData;
         } catch (error) {
             return {
@@ -83,6 +77,7 @@ class AdminCategoryUseCase {
                 throw { status: 400, message: 'Invalid Category ID format' };
             }
             const orgCategoryData = await this.#adminCategoryRepository.findCategoryData(updatedData.categoryId);
+
             if (!orgCategoryData) {
                 throw {
                     status: 404,
@@ -90,22 +85,23 @@ class AdminCategoryUseCase {
                 };
             }
             const fieldsToCheck = ['name', 'description'];
-            let update=false
-            let updatedCategory=null
+            let update = false
+            let updatedCategory = null
             for (const field of fieldsToCheck) {
                 if (updatedData.hasOwnProperty(field)) {
                     // Handle different data types properly
                     if (orgCategoryData[field] !== updatedData[field]) {
-                      update=true
-                      updatedCategory=await this.#adminCategoryRepository.updateData(field,updatedData[field],orgCategoryData._id);
+                        update = true
+                        updatedCategory = await this.#adminCategoryRepository.updateData(field, updatedData[field], orgCategoryData._id);
                     }
-                } 
-            }        
+                }
+            }
+
             return {
-                status:200,
-                message:'Category updating successfully.',
-                updated:update?true:false,
-                data:update?updatedCategory:orgCategoryData
+                status: 200,
+                message: 'Category updating successfully.',
+                updated: update ? true : false,
+                data: update ? updatedCategory : null
             }
 
         } catch (error) {
@@ -115,19 +111,102 @@ class AdminCategoryUseCase {
             };
         }
     }
-    async getAllUsers(reqData){
+    async searchValue(value) {
+        try {
+            if (!value || typeof value !== 'string' || value.trim() === '') {
+                return {
+                    status: 400,
+                    message: 'Search value is required and must be a non-empty string.'
+                };
+            }
+            const categoryData = await this.#adminCategoryRepository.searchCategory(value);
+            return {
+                status: 200,
+                message: 'Search successful.',
+                data: categoryData
+            };
+        } catch (error) {
+            return {
+                status: error.status || 500,
+                message: error.message || 'An error occurred in search Category . UseCase'
+            };
+
+        }
+    }
+    async getAllUsers(reqData) {
         try {
             const { limit, page } = reqData;
             const userData = await this.#adminCategoryRepository.getAllUsers(limit, page);
 
             return userData
-            
+
         } catch (error) {
             return {
                 status: error.status || 500,
                 message: error.message || 'An error occurred in get all users. UseCase'
             };
-            
+
+        }
+    }
+    async blockUser(reqData) {
+        try {
+
+
+            const { userId, action } = reqData
+            // await 
+            if (!mongoose.Types.ObjectId.isValid(userId)) {
+                throw { status: 400, message: 'Invalid User ID format' };
+            }
+
+            await this.#adminCategoryRepository.userBlock(userId, action)
+
+
+            return {
+                status: 200,
+                message: 'User Block/unblock successful.'
+            }
+        } catch (error) {
+            return {
+                status: error.status || 500,
+                message: error.message || 'An error occurred in Block users. UseCase'
+            };
+        }
+    }
+    async searchUser(value) {
+        try {
+            if (!value) {
+                return res.status(400).json({ message: 'Search query is required.' });
+            }
+            const userData = await this.#adminCategoryRepository.searchUser(value)
+            return {
+                status: 200,
+                message: 'Search success.',
+                data: userData
+            }
+        } catch (error) {
+            return {
+                status: error.status || 500,
+                message: error.message || 'An error occurred in search users. UseCase'
+            };
+        }
+    }
+    async takeUserDetails(userId) {
+        try {
+            if (!mongoose.Types.ObjectId.isValid(userId)) {
+                throw { status: 400, message: 'Invalid User ID format' };
+            }
+            const userDetails=await this.#adminCategoryRepository.takeUserDetails(userId);
+
+            return{
+                status:200,
+                message:'take user details successful.',
+                data:userDetails
+            }
+        } catch (error) {
+            return {
+                status: error.status || 500,
+                message: error.message || 'An error occurred in take user details. UseCase'
+            };
         }
     }
 }
