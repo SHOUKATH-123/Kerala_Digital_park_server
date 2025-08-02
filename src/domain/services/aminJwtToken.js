@@ -9,8 +9,8 @@ class AdminJwtToken {
      * @returns {void}
      */
     generateToken(userId, res) {
-       
-        
+
+
         if (!userId) {
             throw new Error('User ID is required to generate token.');
         }
@@ -24,17 +24,17 @@ class AdminJwtToken {
 
         // Set the token in an HTTP-only cookie
         res.cookie('AdminToken', token, {
-            httpOnly: true,
-            secure: false,       // For localhost; set true in production
-            sameSite: 'lax',     // Helps prevent CSRF (good dev default)
+            httpOnly: true,          // Prevents client-side JS access
+            secure: true,            // Ensures cookie is sent over HTTPS (MUST be true in production)
+            sameSite: 'none',        // Allow cross-origin requests (important if frontend & backend are on different domains)
             maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days in ms
         });
     }
     logout(res) {
         res.clearCookie('AdminToken', {
             httpOnly: true,
-            secure: false,    // true in production with HTTPS
-            sameSite: 'lax'
+            secure: true,    // true in production with HTTPS
+            sameSite: 'none'
         });
 
         return {
