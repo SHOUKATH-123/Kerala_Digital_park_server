@@ -14,7 +14,7 @@ class AdminAuthentication {
             const token = req.cookies?.AdminToken;
 
             if (!token) {
-                return res.status(401).json({
+                return res.status(422).json({
                     message: 'No authentication token found. Please log in.'
                 });
             }
@@ -39,7 +39,7 @@ class AdminAuthentication {
                 secure: false,    // true in production with HTTPS
                 sameSite: 'lax'
             });
-            return res.status(401).json({
+            return res.status(422).json({
                 message: 'Invalid or expired authentication token. Please log in again.'
             });
         }
