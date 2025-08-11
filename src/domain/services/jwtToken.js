@@ -24,16 +24,20 @@ class JwtToken {
         // Set the token in an HTTP-only cookie
         res.cookie('token', token, {
             httpOnly: true,
-            secure: false,       // For localhost; set true in production
-            sameSite: 'lax',     // Helps prevent CSRF (good dev default)
+            // secure: false,
+            secure: true,       // For localhost; set true in production
+            // sameSite: 'lax',     // Helps prevent CSRF (good dev default)?
+             sameSite: 'none',
             maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days in ms
         });
     }
     logout(res) {
         res.clearCookie('token', { 
             httpOnly: true,
-            secure: false,    // true in production with HTTPS
-            sameSite: 'lax'
+            // secure: false,
+            secure: true,    // true in production with HTTPS
+             sameSite: 'none',
+            // sameSite: 'lax'
         });
 
         return {

@@ -34,10 +34,15 @@ class AdminAuthentication {
             next();
 
         } catch (error) {
-            res.clearCookie('AdminToken', {
+            // res.clearCookie('AdminToken', {
+            //     httpOnly: true,
+            //     secure: false,    // true in production with HTTPS
+            //     sameSite: 'lax'
+            // });
+             res.clearCookie('AdminToken', {
                 httpOnly: true,
-                secure: false,    // true in production with HTTPS
-                sameSite: 'lax'
+                secure: true,    // true in production with HTTPS
+                sameSite: 'none'
             });
             return res.status(422).json({
                 message: 'Invalid or expired authentication token. Please log in again.'
