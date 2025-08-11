@@ -7,13 +7,13 @@ class OrderController {
     }
     async createOrder(req, res, next) {
         try {
-            const orderData = req.body; // Assuming order data is sent in the request body
-            const userId = req.user; // Assuming user ID is available in the request object after authentication
+            const orderData = req.body; 
+            const userId = req.user; 
 
             const response = await this.#orderUseCase.createOrder(orderData, userId);
 
             if (response.status == 200) {
-                return res.status(200).json({ message: response.message, userData: response.data })
+                return res.status(200).json({ message: response.message, orderData: response.data })
             }
 
             return res.status(response.status).json({ message: response.message });
@@ -21,12 +21,28 @@ class OrderController {
             next(error);
         }
     }
-    async verifyOrder(req,res,next){
+    async verifyOrder(req, res, next) {
         try {
-            console.log("verifyOrder called",12);
-            
+            console.log("verifyOrder called", 12);
+
         } catch (error) {
-            next(error); 
+            next(error);
+        }
+    }
+    async createPayment(req, res, next) {
+        try {
+            const OrderId = req.body
+          
+            const response = await this.#orderUseCase.createPayment(OrderId);
+
+            if (response.status == 200) {
+                return res.status(200).json({ message: response.message, paymentIntent: response.data })
+            }
+
+            return res.status(response.status).json({ message: response.message });
+
+        } catch (error) {
+            next(error)
         }
     }
 }

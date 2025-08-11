@@ -18,26 +18,31 @@ const orderSchema = new mongoose.Schema(
         quantity: { type: Number, required: true },
         price: { type: Number, required: true },
         image: { type: String },
+        size: { type: Object, default: null },
+        paper: { type: Object, default: null },
+        finish: { type: Object, default: null },
+        corner: { type: Object, default: null }
       },
     ],
     shippingAddress: {
-      address: { type: String, default:''   },
-      city: { type: String, default:'' },
-      state: { type: String,default:'' },
-      postalCode: { type: String, default:'' },
-      country: { type: String, default:'' },
-      phone: { type: String, default:'' },
-     
+      address: { type: String, default: '' },
+      city: { type: String, default: '' },
+      state: { type: String, default: '' },
+      postalCode: { type: String, default: '' },
+      country: { type: String, default: '' },
+      phone: { type: String, default: '' },
+
     },
     paymentMethod: {
       type: String,
-      default:''
+      default: ''
     },
     paymentResult: {
-      id: { type: String, default:'' },
-      status: { type: String, default:'' },
-      update_time: { type: String, default:'' },
-      email_address: { type: String, default:'' },
+      id: { type: String, default: '' },
+      status: { type: String, default: '' },
+      update_time: { type: String, default: '' },
+      email_address: { type: String, default: '' },
+
     },
     taxPrice: {
       type: Number,
@@ -72,7 +77,7 @@ const orderSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ['Create','Processing', 'Shipped', 'Delivered', 'Cancelled'],
+      enum: ['Create', 'Processing', 'Shipped', 'Delivered', 'Cancelled'],
       default: 'Create',
     },
   },

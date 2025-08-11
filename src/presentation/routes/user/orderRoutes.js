@@ -23,5 +23,8 @@ orderRouter.post('/create', userAuthentication.verifyUser,(req,res,next)=>{
 orderRouter.post('/verifyOrder', userAuthentication.verifyUser,(req,res,next)=>{
     orderController.verifyOrder(req, res, next);
 });
+orderRouter.post('/create-payment-intent',userAuthentication.verifyUser,(req,res,next)=>{
+    orderController.createPayment(req,res,next)
+})
 
 export default orderRouter;

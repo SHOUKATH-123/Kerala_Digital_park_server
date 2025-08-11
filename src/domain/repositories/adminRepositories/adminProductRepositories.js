@@ -41,15 +41,54 @@ class AdminProductRepositories {
             };
         }
     }
+    parseProductOptions(data) {
+        const fields = ['size', 'paper', 'finish', 'corners'];
+        const parsed = {};
+
+        for (const field of fields) {
+            const fieldData = data[field];
+
+            // Allow empty arrays
+            if (!fieldData) {
+                parsed[field] = [];
+                continue;
+            }
+
+            // Ensure it's an array (even if only one item sent)
+            const items = Array.isArray(fieldData) ? fieldData : [fieldData];
+
+            parsed[field] = items.map((item) => {
+                try {
+                    return JSON.parse(item);
+                } catch (e) {
+                    console.error(`Failed to parse ${field} item:`, item);
+                    return null;
+                }
+            }).filter(Boolean); // filter out nulls from failed JSON.parse
+        }
+
+        return parsed;
+    };
     async addNewProduct(productData, imagesUrl) {
         try {
 
-            const newProduct = new Product({
+            const { size, paper, finish, corners } = productData;
+            const parsedSize = size ? size.map(item => JSON.parse(item)) : [];
+            const parsedPaper = paper ? paper.map(item => JSON.parse(item)) : [];
+            const parsedFinish = finish ? finish.map(item => JSON.parse(item)) : [];
+            const parsedCorners = corners ? corners.map(item => JSON.parse(item)) : [];
+
+            // Update productData with parsed values (keeping other fields unchanged)
+            const updatedProductData = {
                 ...productData,
-                images: imagesUrl // must be an array of strings
+                size: parsedSize, paper: parsedPaper, finish: parsedFinish, corners: parsedCorners
+            };
+
+            const newProduct = new Product({
+                ...updatedProductData,
+                images: imagesUrl
             });
 
-            // Save to DB
             const savedProduct = await newProduct.save();
 
             return savedProduct;
@@ -91,7 +130,7 @@ class AdminProductRepositories {
                 .populate('category', 'name')
                 .skip(skip)
                 .limit(limitNumber)
-                .sort(sortCriteria ); // optional: sort newest first
+                .sort(sortCriteria); // optional: sort newest first
 
             // ✅ Calculate total pages
             const totalPages = Math.ceil(totalCount / limitNumber);
@@ -289,7 +328,7 @@ class AdminProductRepositories {
             let searchQuery = {
                 $or: [
                     { name: { $regex: searchKey, $options: 'i' } },
-                    { brand: { $regex: searchKey, $options: 'i' } },
+                    { subtitle: { $regex: searchKey, $options: 'i' } },
                     ...(categoryIds.length > 0 ? [{ category: { $in: categoryIds } }] : [])
                 ]
             };
@@ -306,6 +345,37 @@ class AdminProductRepositories {
             throw {
                 status: error.status || 500,
                 message: error.message || 'Search Product is failed in admin product repositories.'
+            };
+        }
+    }
+    async updateProductData(data) {
+        try {
+            // console.log(1111, data);
+            const { productId, ...updateFields } = data;
+
+            if (!productId) {
+                throw {
+                    status: 400,
+                    message: "Product ID (productId) is required for update."
+                };
+            }
+            const updatedProduct = await Product.findByIdAndUpdate(
+                productId,
+                { $set: updateFields },
+                { new: true } 
+            );
+
+            return{
+                size:updatedProduct.size,
+                paper:updatedProduct.paper,
+                finish:updateFields.finish,
+                corner:updateFields.corner
+            }
+
+        } catch (error) {
+            throw {
+                status: error.status || 500,
+                message: error.message || 'update Product details is failed in admin product repositories.'
             };
         }
     }

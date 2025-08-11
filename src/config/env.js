@@ -11,7 +11,9 @@ const configData = {
     AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID,
     AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY,
     AWS_REGION: process.env.AWS_REGION,
-    S3_BUCKET_NAME:process.env.S3_BUCKET_NAME
+    S3_BUCKET_NAME:process.env.S3_BUCKET_NAME,
+    STRIPE_SECRET_KEY:process.env.STRIPE_SECRET_KEY,
+    STRIPE_PUBLIC_KEY:process.env.STRIPE_PUBLIC_KEY,
 }
 
 export default configData

@@ -99,11 +99,11 @@ class AdminProductUseCase {
             const productObject = takeProduct.toObject();
             productObject.category = takeProduct.category.toString();
 
-            updatedData.price = parseInt(updatedData.price)
+            updatedData.price = parseInt(updatedData.price) 
             updatedData.stock = parseInt(updatedData.stock)
 
 
-            const fieldsToCheck = ['name', 'description', 'brand', 'price', 'category', 'stock'];
+            const fieldsToCheck = ['name', 'description', 'subtitle', 'price', 'category', 'stock'];
             let update = false
             let updatedProduct = null
             for (const field of fieldsToCheck) {
@@ -228,6 +228,25 @@ class AdminProductUseCase {
                 message: error.message || 'An error occurred in take category data. in UseCase'
             };
         }
+    }
+    async updateProductDetails(newData){
+         try {
+
+            const savedData=await this.#adminProductRepositories.updateProductData(newData)
+             console.log(savedData);
+             
+             return {
+                status:200,
+                message:'Product details update successful.',
+                data:savedData
+            }
+
+         } catch (error) {
+            return {
+                status: error.status || 500,
+                message: error.message || 'An error occurred in updateProductDetails category data. in UseCase'
+            };
+         }
     }
 }
 

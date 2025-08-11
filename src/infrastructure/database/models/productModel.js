@@ -1,4 +1,27 @@
 import mongoose from 'mongoose';
+const sizeSchema = new mongoose.Schema({
+  name: { type: String },
+  size: {
+    width: { type: String },
+    height: { type: String },
+  },
+}, { _id: false });
+
+const paperSchema = new mongoose.Schema({
+  name: { type: String },
+  points: { type: [String] }, // or you can use [mongoose.Schema.Types.Mixed] if it's more than just strings
+}, { _id: false });
+
+const finishSchema = new mongoose.Schema({
+  name: { type: String },
+  description: { type: String },
+}, { _id: false });
+
+const cornersSchema = new mongoose.Schema({
+  name: { type: String },
+  description: { type: String },
+}, { _id: false });
+
 
 const productSchema = new mongoose.Schema(
   {
@@ -24,7 +47,7 @@ const productSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Category'
     },
-    brand: {
+    subtitle: {
       type: String,
       default: ''
     },
@@ -32,11 +55,15 @@ const productSchema = new mongoose.Schema(
       type: Number,
       default: 0
     },
+    size: { type: [sizeSchema], default: [] },
+    paper: { type: [paperSchema], default: [] },
+    finish: { type: [finishSchema], default: [] },
+    corner: { type: [cornersSchema], default: [] },
     rating: {
       type: Object,
       default: {
-        count:0,
-        total:0
+        count: 0,
+        total: 0
       }
     },
     reviews: [

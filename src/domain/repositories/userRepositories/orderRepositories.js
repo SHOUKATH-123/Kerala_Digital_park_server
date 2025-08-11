@@ -2,6 +2,7 @@
 import Product from "../../../infrastructure/database/models/productModel.js";
 import Order from "../../../infrastructure/database/models/orderModel.js";
 
+
 class OrderRepositories {
 
     async createOrder(products, userId) {
@@ -22,18 +23,22 @@ class OrderRepositories {
                 if (item.quantity > product.stock) {
                     throw { status: 400, message: `Requested quantity (${item.quantity}) for ${product.name} exceeds available stock (${product.stock}). ProductId is ${product._id}.` };
                 }
-
+                //'size', 'paper', 'finish', 'corner'
                 validatedProducts.push({
                     product: product._id,
                     name: product.name,
                     quantity: item.quantity,
                     price: product.price,
                     image: product.images[0] || '',
+                    size: item.size,
+                    paper: item.paper,
+                    finish: item.finish,
+                    corner: item.corner
                 });
 
             }
 
-            for (const item of validatedProducts){
+            for (const item of validatedProducts) {
                 await Product.updateOne({ _id: item.product }, { $inc: { stock: -item.quantity } });
             }
             const itemsPrice = validatedProducts.reduce((acc, item) => acc + item.price * item.quantity, 0);
@@ -44,17 +49,17 @@ class OrderRepositories {
             const totalPrice = itemsPrice + taxPrice + shippingPrice;
 
             const newOrder = new Order({
-                user: userId, 
+                user: userId,
                 orderItems: validatedProducts,
                 taxPrice,
                 shippingPrice,
                 totalPrice,
             });
 
-             const savedOrder = await newOrder.save();
+            const savedOrder = await newOrder.save();
 
-             return savedOrder;
-             
+            return savedOrder;
+
 
         } catch (error) {
             throw {
@@ -63,7 +68,26 @@ class OrderRepositories {
             };
         }
     }
+    async takeOrderData(orderId) {
+        try {
 
+            const orderData = await Order.findById(orderId)
+
+            if (!orderData) {
+                throw {
+                    status: 404,
+                    message: 'Order not found. Please check the order ID and try again.'
+                };
+            }
+             return orderData
+
+        } catch (error) {
+            throw {
+                status: error.status || 500,
+                message: error.message || 'An error occurred while creating  the payment.'
+            };
+        }
+    }
 }
 
 export default OrderRepositories;

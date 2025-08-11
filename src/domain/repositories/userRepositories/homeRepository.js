@@ -22,7 +22,7 @@ class HomeRepository {
                 },
                 {
                     $project: {
-                        name: 1, description: 1, price: 1, images: 1, brand: 1, stock: 1, rating: 1,
+                        name: 1, description: 1, price: 1, images: 1, subtitle: 1, stock: 1, rating: 1,
                         category: { name: 1, isListed: 1, _id: 1 }, createdAt: 1
                     }
                 }
@@ -157,7 +157,7 @@ class HomeRepository {
                     pipeline: [{
                         $project: {
                             _id: 0, name: 1, price: 1, images: 1, description: 1,
-                            rating: 1, createdAt: 1,
+                            rating: 1, createdAt: 1,size: 1,paper: 1,finish: 1, corner: 1,
                         },
                     },],
                 },

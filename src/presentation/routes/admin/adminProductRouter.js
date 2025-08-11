@@ -52,6 +52,10 @@ productRouter.get('/productCategory',adminAuthentication.verifyAdmin,(req,res,ne
 productRouter.get('/product/search/:value',adminAuthentication.verifyAdmin,(req,res,next)=>{
     adminProductController.searchProduct(req,res,next);
 })
+productRouter.patch('/product/updataDetails',adminAuthentication.verifyAdmin,(req,res,next)=>{
+    adminProductController.updateDetails(req,res,next);
+    
+})
 
 
 

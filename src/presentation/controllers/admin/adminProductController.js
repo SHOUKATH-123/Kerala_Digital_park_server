@@ -17,6 +17,7 @@ class AdminProductController {
             price: Number(req.body.price),
             stock: Number(req.body.stock)
          };
+         // console.log(req.body);
 
          // Validate form data
          const { error } = productSchema.validate(body, { abortEarly: false });
@@ -26,7 +27,6 @@ class AdminProductController {
             return res.status(400).json({ message: errorMessages });
          }
 
-         // Validate files (images)
          if (!req.files || req.files.length < 1) {
             return res.status(400).json({ message: 'You should add at least one product image' });
          }
@@ -106,10 +106,10 @@ class AdminProductController {
          next(error)
       }
    }
-   async updateProductImage(req,res,next){
+   async updateProductImage(req, res, next) {
       try {
-         
-         const response = await this.#adminProductUseCase.updateProductImage(req.body,req.files);
+
+         const response = await this.#adminProductUseCase.updateProductImage(req.body, req.files);
          if (response.status == 200) {
             return res.status(200).json({ message: response.message, data: response.data, updated: response.updated });
          }
@@ -118,28 +118,41 @@ class AdminProductController {
          next(error)
       }
    }
-   async takeProductCategory(req,res,next){
+   async takeProductCategory(req, res, next) {
       try {
-         const response=await this.#adminProductUseCase.takeProductCategory()
-         if(response.status==200){
-            return res.status(200).json({message:response.message,categoryData:response.data})
+         const response = await this.#adminProductUseCase.takeProductCategory()
+         if (response.status == 200) {
+            return res.status(200).json({ message: response.message, categoryData: response.data })
          }
-         return res.status(response.status).json({message:response.message})
+         return res.status(response.status).json({ message: response.message })
       } catch (error) {
          next(error)
       }
    }
-   async searchProduct(req,res,next){
+   async searchProduct(req, res, next) {
       try {
-         const value=req.params.value
-          const response = await this.#adminProductUseCase.searchProduct(value);
+         const value = req.params.value
+         const response = await this.#adminProductUseCase.searchProduct(value);
          if (response.status == 200) {
             return res.status(200).json({ message: response.message, productData: response.data });
          }
          return res.status(response.status).json({ message: response.message });
 
-         
-         
+
+
+      } catch (error) {
+         next(error)
+      }
+   }
+   async updateDetails(req, res, next) {
+      try {
+
+         const response = await this.#adminProductUseCase.updateProductDetails(req.body);
+         if (response.status == 200) {
+            return res.status(200).json({ message: response.message, productData: response.data });
+         }
+         return res.status(response.status).json({ message: response.message });
+
       } catch (error) {
          next(error)
       }
