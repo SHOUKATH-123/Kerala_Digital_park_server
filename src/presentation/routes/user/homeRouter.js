@@ -16,7 +16,7 @@ const homeController = new HomeController(
     homeUseCase
 );
 
-homeRouter.get('/products',(req,res,next)=>{
+homeRouter.get('/products',(req,res,next)=>{ 
     homeController.takeAllProduct(req,res,next);
 });
 homeRouter.post('/addToCart',userAuthentication.verifyUser,(req,res,next)=>{

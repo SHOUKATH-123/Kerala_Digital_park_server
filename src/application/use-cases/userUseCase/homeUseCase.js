@@ -19,7 +19,7 @@ class HomeUseCase{
                 message: error.message || 'An error occurred during take product Data'
             };
         }
-    }
+    } 
     async addToCard(body,userId){
         try {
            
@@ -49,7 +49,7 @@ class HomeUseCase{
             };
         }
     }
-    async takeCartData(userId) {
+    async takeCartData(userId){
         try {
             const cardData =await this.#homeRepository.takeCartData(userId);
             return {

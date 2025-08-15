@@ -31,7 +31,7 @@ class HomeController{
     }
     async takeCartData(req, res, next){
         try {
-            const userId=req.user; 
+            const userId=req.user;
             
             const response = await this.#homeUseCase.takeCartData(userId);
             if (response.status == 200) {

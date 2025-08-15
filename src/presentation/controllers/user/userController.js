@@ -42,8 +42,9 @@ class UserController {
             const response = await this.#userUseCase.login(req.body);
 
             if (response.status == 200) {
+               
+                this.#jwtToken.generateToken(response.data?.userId, res);
 
-                this.#jwtToken.generateToken(response.data, res);
                 return res.status(200).json({ message: response.message, userData: response.data })
             }
 
@@ -55,10 +56,11 @@ class UserController {
     }
     async otpVerification(req, res, next) {
         try {
-
+           
             const response = await this.#userUseCase.otpVerification(req.body);
-
+            
             if (response.status == 200) {
+              
                 this.#jwtToken.generateToken(response.data.userId, res);
 
                 return res.status(200).json({ message: response.message, userData: response.data })
@@ -102,7 +104,7 @@ class UserController {
         }
     }
 
-    async verifyResetOtp(req, res, next) {
+    async verifyResetOtp(req, res, next) { 
         try {
             // console.log(req.body);
             if (!req.body.email) {

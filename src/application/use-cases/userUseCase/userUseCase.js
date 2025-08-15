@@ -114,7 +114,13 @@ class UserUseCase {
 
 
             const userData = await this.#userRepository.takeUserData(email);
-
+            if (userData.isBlocked) {
+                return {
+                    status: 403,
+                    message: 'Your account has been blocked. Please contact support for assistance.',
+                    data: loginData
+                };
+            }
 
             await this.#userRepository.comparePassword(userData.password, password);
 
@@ -123,15 +129,17 @@ class UserUseCase {
                 return {
                     status: 400,
                     message: 'User is not verified. Please verify your account before logging in.',
-                    data:loginData
+                    data: loginData
                 }
             };
+            // console.log(1212, userData);
+
 
 
             return {
                 status: 200,
                 message: 'Login successful',
-                data: {userId:userData._id,email:userData.email}
+                data: { userId: userData._id, email: userData.email }
             };
         } catch (error) {
             return {
@@ -143,7 +151,7 @@ class UserUseCase {
 
     async otpVerification(otpReqData) {
         try {
-            
+
             const takeOtpData = await this.#userRepository.takeOtpData(otpReqData.email)
 
             await this.#userRepository.optCompare(otpReqData.otp, takeOtpData.otp)
@@ -196,7 +204,7 @@ class UserUseCase {
     }
     async verifyResetOtp(reqData) {
         try {
-           
+
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(reqData.email)) {
                 return {
@@ -205,18 +213,18 @@ class UserUseCase {
                 };
             }
             console.log(reqData);
-              const takeOtpData = await this.#userRepository.takeOtpData(reqData.email)
-         
-           await this.#userRepository.optCompare(reqData.otp, takeOtpData.otp)
-           
+            const takeOtpData = await this.#userRepository.takeOtpData(reqData.email)
+
+            await this.#userRepository.optCompare(reqData.otp, takeOtpData.otp)
+
             const userData = await this.#userRepository.takeUserDataForReset(takeOtpData.email);
-             return {
+            return {
                 status: 200,
                 message: 'OTP verified successfully. You have 2 minutes to complete your password reset.',
-                data: { email: userData.email, userId: userData._id,UId:userData.resetPassId}
+                data: { email: userData.email, userId: userData._id, UId: userData.resetPassId }
             };
-            
-            
+
+
 
         } catch (error) {
             return {

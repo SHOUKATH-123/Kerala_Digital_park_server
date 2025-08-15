@@ -5,7 +5,7 @@ import { v4 as UniqueId } from 'uuid';
 import bcrypt from 'bcryptjs';
 
 class UserRepositories {
-
+ 
     // ✅ Check if email exists with error handling
     async checkEmailExists(email) {
         try {
@@ -68,7 +68,7 @@ class UserRepositories {
 
             const user = await User.findOne(
                 { email: Email },
-                { email: 1, password: 1, _id: 1, isVerified: 1 }
+                { email: 1, password: 1, _id: 1, isVerified: 1,isBlocked: 1 }
             );
 
             if (!user) {

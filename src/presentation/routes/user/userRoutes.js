@@ -30,7 +30,7 @@ const userController = new UserController(
 userRouter.post('/register', (req, res, next) => {
     userController.saveUserData(req, res, next)
 })
-userRouter.post('/login', (req, res, next) => {
+userRouter.post('/login', (req, res, next) => { 
     userController.login(req, res, next)
 })
 userRouter.post('/verifyOtp', (req, res, next) => {

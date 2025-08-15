@@ -26,7 +26,7 @@ class HomeRepository {
                         category: { name: 1, isListed: 1, _id: 1 }, createdAt: 1
                     }
                 }
-            ]);
+            ]); 
 
             return products
         } catch (error) {
@@ -385,12 +385,11 @@ class HomeRepository {
     async takeWishlistData(userId) {
         try {
             const wishlist = await Wishlist.findOne({ userId }).populate('products', 'name price images description rating');
-            console.log(wishlist);
-
+           
             if (!wishlist) {
                 throw {
                     status: 404,
-                    message: 'Wishlist not found'
+                    message: 'Wishlist not found.'
                 };
             }
 
