@@ -66,12 +66,12 @@ const productSchema = new mongoose.Schema(
         total: 0
       }
     },
-    reviews: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Review'
-      }
-    ],
+    // reviews: [
+    //   {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: 'Review'
+    //   }
+    // ],
     isListed: {
       type: Boolean,
       default: true

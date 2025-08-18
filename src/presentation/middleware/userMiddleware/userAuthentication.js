@@ -26,8 +26,10 @@ class UserAuthentication {
             if (!userData) {
                 res.clearCookie('token', {
                     httpOnly: true,
-                    secure: false,
-                    sameSite: 'lax'
+                    // secure: false,
+                    // sameSite: 'lax'
+                    secure: true,    // true in production with HTTPS
+                    sameSite: 'none'
                 });
                 return res.status(498).json({
                     message: 'Invalid or expired authentication token. Please log in again.'
@@ -37,32 +39,36 @@ class UserAuthentication {
             if (userData.isBlocked) {
                 res.clearCookie('token', {
                     httpOnly: true,
-                    secure: false,
-                    sameSite: 'lax'
+                    // secure: false,
+                    // sameSite: 'lax'
+                    secure: true,    // true in production with HTTPS
+                    sameSite: 'none'
                 });
                 return res.status(498).json({
                     message: 'Your account has been blocked. Please contact our support team for assistance.'
                 });
             }
-            
+
             req.user = decoded.userId;
 
-            const now = Math.floor(Date.now() / 1000); 
-            const remainingSeconds = decoded.exp - now;
-            const remainingDays = remainingSeconds / (24 * 60 * 60);
+            // const now = Math.floor(Date.now() / 1000); 
+            // const remainingSeconds = decoded.exp - now;
+            // const remainingDays = remainingSeconds / (24 * 60 * 60);
 
 
             //regenerate new token is remaining days are 10 days
-            if (remainingDays <= 10) {
-                // userToken.generateToken(decoded.userId, res);
-            }
+            // if (remainingDays <= 10) {
+            // userToken.generateToken(decoded.userId, res);
+            // }
             next();
 
         } catch (error) {
             res.clearCookie('token', {
                 httpOnly: true,
-                secure: false,
-                sameSite: 'lax'
+                // secure: false,
+                // sameSite: 'lax'
+                secure: true,    // true in production with HTTPS
+                sameSite: 'none'
             });
             return res.status(498).json({
                 message: 'Invalid or expired authentication token. Please log in again.'

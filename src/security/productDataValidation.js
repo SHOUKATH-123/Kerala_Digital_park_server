@@ -58,5 +58,5 @@ export const productSchema = Joi.object({
 
   finish: Joi.array().optional(),
 
-  corners: Joi.array().optional(),
+  corner: Joi.array().optional(),
 });

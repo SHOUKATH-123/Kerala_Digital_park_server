@@ -17,20 +17,20 @@ class AdminProductController {
             price: Number(req.body.price),
             stock: Number(req.body.stock)
          };
-         // console.log(req.body);
-
-         // Validate form data
+         
          const { error } = productSchema.validate(body, { abortEarly: false });
 
+        
+         
          if (error) {
             const errorMessages = error.details.map(err => err.message);
             return res.status(400).json({ message: errorMessages });
          }
-
+         
          if (!req.files || req.files.length < 1) {
             return res.status(400).json({ message: 'You should add at least one product image' });
          }
-
+         
          const response = await this.#adminProductUseCase.addNewProduct(body, req.files);
 
          if (response.status == 200) {

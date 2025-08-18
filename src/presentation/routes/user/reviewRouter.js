@@ -23,6 +23,12 @@ const reviewControllers=new ReviewController(
 reviewRouter.post('/',userAuthentication.verifyUser,(req,res,next)=>{
     reviewControllers.addNewReview(req,res,next);
 })
+reviewRouter.get('/productReview',userAuthentication.verifyUser,(req,res,next)=>{
+    reviewControllers.takeProductReview(req,res,next);
+})
+reviewRouter.put('/deleteReview/:id',userAuthentication.verifyUser,(req,res,next)=>{
+    reviewControllers.deleteReview(req,res,next);
+})
 
 
 export default reviewRouter

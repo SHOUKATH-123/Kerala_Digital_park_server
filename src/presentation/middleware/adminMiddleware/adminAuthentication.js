@@ -36,7 +36,7 @@ class AdminAuthentication {
         } catch (error) {
             // res.clearCookie('AdminToken', {
             //     httpOnly: true,
-            //     secure: false,    // true in production with HTTPS
+            //     secure: false,    // true in production with HTTPS 
             //     sameSite: 'lax'
             // });
              res.clearCookie('AdminToken', {

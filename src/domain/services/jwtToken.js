@@ -27,16 +27,16 @@ class JwtToken {
             // secure: false,
             secure: true,       // For localhost; set true in production
             // sameSite: 'lax',     // Helps prevent CSRF (good dev default)?
-             sameSite: 'none',
+            sameSite: 'none',
             maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days in ms
         });
     }
     logout(res) {
-        res.clearCookie('token', { 
+        res.clearCookie('token', {
             httpOnly: true,
             // secure: false,
             secure: true,    // true in production with HTTPS
-             sameSite: 'none',
+            sameSite: 'none',
             // sameSite: 'lax'
         });
 

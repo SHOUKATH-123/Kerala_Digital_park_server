@@ -7,6 +7,7 @@ import homeRouter from './presentation/routes/user/homeRouter.js';
 import orderRouter from './presentation/routes/user/orderRoutes.js';
 import addressRouter from './presentation/routes/user/addressRouter.js';
 import reviewRouter from './presentation/routes/user/reviewRouter.js';
+import productAndAlienation from './presentation/routes/user/productAndAlienation.js'
 
 //adminRouters
 import adminRouter from './presentation/routes/admin/adminRouter.js'
@@ -19,6 +20,7 @@ mainRouter.use('/',homeRouter);
 mainRouter.use('/order',orderRouter);
 mainRouter.use('/address',addressRouter);
 mainRouter.use('/review',reviewRouter);
+mainRouter.use('/product',productAndAlienation);
 
 // ✅ admin Route handlers
 mainRouter.use('/admin',adminRouter);

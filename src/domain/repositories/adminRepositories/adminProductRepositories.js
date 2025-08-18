@@ -42,7 +42,7 @@ class AdminProductRepositories {
         }
     }
     parseProductOptions(data) {
-        const fields = ['size', 'paper', 'finish', 'corners'];
+        const fields = ['size', 'paper', 'finish', 'corner'];
         const parsed = {};
 
         for (const field of fields) {
@@ -72,16 +72,16 @@ class AdminProductRepositories {
     async addNewProduct(productData, imagesUrl) {
         try {
 
-            const { size, paper, finish, corners } = productData;
+            const { size, paper, finish, corner } = productData;
             const parsedSize = size ? size.map(item => JSON.parse(item)) : [];
             const parsedPaper = paper ? paper.map(item => JSON.parse(item)) : [];
             const parsedFinish = finish ? finish.map(item => JSON.parse(item)) : [];
-            const parsedCorners = corners ? corners.map(item => JSON.parse(item)) : [];
+            const parsedCorner = corner ? corner.map(item => JSON.parse(item)) : [];
 
             // Update productData with parsed values (keeping other fields unchanged)
             const updatedProductData = {
                 ...productData,
-                size: parsedSize, paper: parsedPaper, finish: parsedFinish, corners: parsedCorners
+                size: parsedSize, paper: parsedPaper, finish: parsedFinish, corner: parsedCorner
             };
 
             const newProduct = new Product({

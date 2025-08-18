@@ -15,8 +15,8 @@ class AdminProductUseCase {
     }
     async addNewProduct(productData, images) {
         try {
+            
             const checkCategory = await this.#adminProductRepositories.checkCategory(productData.category);
-
             if (!checkCategory) {
                 images.forEach((file) => {
                     const filePath = path.resolve(file.path);
@@ -28,12 +28,14 @@ class AdminProductUseCase {
                     status: 400
                 };
             }
+            
             await this.#adminProductRepositories.checkNameExists(productData.name);
 
             const imagesUrl = await this.#awsS3Bucket.storeImages(images);
-
+            // console.log(imagesUrl);
+            
             const addedProductData = await this.#adminProductRepositories.addNewProduct(productData, imagesUrl);
-
+            
             return { status: 200, data: addedProductData, message: 'Product added successfully.', }
 
         } catch (error) {
@@ -233,7 +235,7 @@ class AdminProductUseCase {
          try {
 
             const savedData=await this.#adminProductRepositories.updateProductData(newData)
-             console.log(savedData);
+            //  console.log(savedData);
              
              return {
                 status:200,
