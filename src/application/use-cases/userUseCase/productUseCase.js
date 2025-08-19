@@ -49,6 +49,24 @@ class ProductUseCase {
             };
         }
     }
+    async searchProduct(key){
+        try {
+            
+            const searchProduct=await this.#productRepository.takeSearchProduct(key);
+
+            return {
+                 status:200,
+                message:"successful.",
+                data:searchProduct
+            }
+
+        } catch (error) {
+             return {
+                status: error.status || 500 ,
+                message: error.message || 'An error occurred while search Product.'
+            };
+        }
+    }
 }
 
 export default ProductUseCase;

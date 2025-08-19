@@ -60,7 +60,28 @@ class ProductRepository {
             };
         }
     }
-    
+    async takeSearchProduct(key) {
+        try {
+
+            const takeProductDetails = await Product.find({
+                $or: [
+                    { name: { $regex: key, $options: "i" } },
+                    { description: { $regex: key, $options: "i" } },
+                    { subtitle: { $regex: key, $options: "i" } }
+                ]
+            },{name:1 , description:1,subtitle:1})
+                .limit(10); // limit to 10 results
+
+            return takeProductDetails;
+
+        } catch (error) {
+            throw {
+                status: error.status || 500,
+                message: error.message || 'An error occurred while take product details in useCase.'
+            };
+        }
+    }
+
 
 }
 

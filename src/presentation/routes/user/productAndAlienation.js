@@ -22,6 +22,9 @@ AlienationRouter.get('/tobBarCategory',(req,res,next)=>{
 AlienationRouter.get('/productDetails/:id',(req,res,next)=>{
       productController.takeProductDetails(req,res,next)
 })
+AlienationRouter.get('/searchProduct',(req,res,next)=>{
+      productController.searchProduct(req,res,next);
+})
 
 
 
