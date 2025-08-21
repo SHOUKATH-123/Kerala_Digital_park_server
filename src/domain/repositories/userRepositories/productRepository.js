@@ -34,7 +34,8 @@ class ProductRepository {
     async takeProductDetails(productId) {
         try {
 
-            const productData = await Product.findOne({ _id: productId });
+            const productData = await Product.findOne({ _id: productId })
+            .populate("category", "name _id"); ;
 
             if (!productData) {
                 throw {
