@@ -13,6 +13,8 @@ import productAndAlienation from './presentation/routes/user/productAndAlienatio
 import adminRouter from './presentation/routes/admin/adminRouter.js'
 import adminCategoryRouter from './presentation/routes/admin/adminCategoryRouter.js'
 import adminProductRouter from './presentation/routes/admin/adminProductRouter.js'
+import adminOrderRouter from './presentation/routes/admin/adminOrderRouter.js';
+import adminCouponRouter from './presentation/routes/admin/adminCouponRouter.js';
 
 // ✅ user Route handlers
 mainRouter.use('/user',userRouter); 
@@ -26,6 +28,8 @@ mainRouter.use('/product',productAndAlienation);
 mainRouter.use('/admin',adminRouter);
 mainRouter.use('/admin',adminCategoryRouter);
 mainRouter.use('/admin',adminProductRouter);
+mainRouter.use('/admin',adminOrderRouter);
+mainRouter.use('/admin',adminCouponRouter);
 
 
 

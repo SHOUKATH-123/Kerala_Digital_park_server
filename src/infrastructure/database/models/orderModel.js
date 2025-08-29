@@ -25,13 +25,9 @@ const orderSchema = new mongoose.Schema(
       },
     ],
     shippingAddress: {
-      address: { type: String, default: '' },
-      city: { type: String, default: '' },
-      state: { type: String, default: '' },
-      postalCode: { type: String, default: '' },
-      country: { type: String, default: '' },
-      phone: { type: String, default: '' },
-
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Address', 
+      default: null,
     },
     paymentMethod: {
       type: String,

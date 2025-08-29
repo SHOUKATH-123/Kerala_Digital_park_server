@@ -64,7 +64,7 @@ class ReviewUseCase {
            return {
                 status: 200,
                 data:takeReviews,
-                message: "Review created successfully.",
+                message: "Review take successfully.",
             }
             
 
