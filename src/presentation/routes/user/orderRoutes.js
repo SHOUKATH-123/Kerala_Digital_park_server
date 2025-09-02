@@ -7,7 +7,7 @@ import OrderRepositories from '../../../domain/repositories/userRepositories/ord
 import UserAuthentication from '../../middleware/userMiddleware/userAuthentication.js';
 const userAuthentication = new UserAuthentication();
 
-const orderRepositories = new OrderRepositories();
+const orderRepositories = new OrderRepositories(); 
 
 const orderUseCase = new OrderUseCase(
     orderRepositories

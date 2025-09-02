@@ -15,6 +15,7 @@ import adminCategoryRouter from './presentation/routes/admin/adminCategoryRouter
 import adminProductRouter from './presentation/routes/admin/adminProductRouter.js'
 import adminOrderRouter from './presentation/routes/admin/adminOrderRouter.js';
 import adminCouponRouter from './presentation/routes/admin/adminCouponRouter.js';
+import adminDataRouter from './presentation/routes/admin/adminDataRouter.js';
 
 // ✅ user Route handlers
 mainRouter.use('/user',userRouter); 
@@ -30,6 +31,7 @@ mainRouter.use('/admin',adminCategoryRouter);
 mainRouter.use('/admin',adminProductRouter);
 mainRouter.use('/admin',adminOrderRouter);
 mainRouter.use('/admin',adminCouponRouter);
+mainRouter.use('/admin',adminDataRouter)
 
 
 

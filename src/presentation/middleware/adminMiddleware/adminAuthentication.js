@@ -1,9 +1,9 @@
 
 import jwt from 'jsonwebtoken';
 import config from '../../../config/env.js'
-import AdminJwtToken from '../../../domain/services/aminJwtToken.js'
+// import AdminJwtToken from '../../../domain/services/aminJwtToken.js'
 
-const adminJwtToken = new AdminJwtToken()
+// const adminJwtToken = new AdminJwtToken()
 
 class AdminAuthentication {
 
@@ -22,15 +22,15 @@ class AdminAuthentication {
             const decoded = jwt.verify(token, config.JWT_SECRET);
             req.admin = decoded.userId;
 
-            const now = Math.floor(Date.now() / 1000);
-            const remainingSeconds = decoded.exp - now;
-            const remainingDays = remainingSeconds / (24 * 60 * 60);
+            // const now = Math.floor(Date.now() / 1000);
+            // const remainingSeconds = decoded.exp - now;
+            // const remainingDays = remainingSeconds / (24 * 60 * 60);
 
 
             //regenerate new token is remaining days are 10 days
-            if (remainingDays <= 10) {
-                adminJwtToken.generateToken(decoded.userId, res);
-            }
+            // if (remainingDays <= 10) {
+            //     adminJwtToken.generateToken(decoded.userId, res);
+            // }
             next();
 
         } catch (error) {

@@ -24,9 +24,7 @@ class AddressRepository {
     async getAddressesByUserId(userId) {
         try {
             const addresses = await Address.find({ user: userId }).sort({ createdAt: -1 });
-            if (!addresses || addresses.length === 0) {
-                throw { status: 404, message: 'No addresses found for this user.' };
-            }
+            
             return addresses;
         } catch (error) {
             throw {

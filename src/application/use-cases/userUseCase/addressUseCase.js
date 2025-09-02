@@ -12,6 +12,7 @@ class AddressUseCase {
 
             // 2. Check if the user already has 5 addresses
             if (existingAddresses.length >= 5){
+                
                 return {
                     status: 400,
                     message: 'You can only add up to 5 addresses. Please delete an existing address before adding a new one.',
