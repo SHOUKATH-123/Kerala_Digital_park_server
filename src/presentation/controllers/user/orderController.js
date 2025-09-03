@@ -7,8 +7,8 @@ class OrderController {
     }
     async createOrder(req, res, next) {
         try {
-            const orderData = req.body; 
-            const userId = req.user; 
+            const orderData = req.body;
+            const userId = req.user;
 
             const response = await this.#orderUseCase.createOrder(orderData, userId);
 
@@ -29,10 +29,10 @@ class OrderController {
             next(error);
         }
     }
-    async createPayment(req, res, next) { 
+    async createPayment(req, res, next) {
         try {
             const OrderId = req.body
-          
+
             const response = await this.#orderUseCase.createPayment(OrderId);
 
             if (response.status == 200) {
@@ -41,6 +41,67 @@ class OrderController {
 
             return res.status(response.status).json({ message: response.message });
 
+        } catch (error) {
+            next(error)
+        }
+    }
+    async addAddress(req, res, next) {
+        try {
+            const reqData = req.body
+            const response = await this.#orderUseCase.addAddress(reqData);
+
+            if (response.status == 200) {
+                return res.status(200).json({ message: response.message, data: response.data })
+            }
+
+            return res.status(response.status).json({ message: response.message })
+
+        } catch (error) {
+            next(error)
+        }
+    }
+    async ApplyCoupon(req, res, next) {
+        try {
+            const reqData = req.body
+
+            const response = await this.#orderUseCase.ApplyCoupon(reqData);
+
+            if (response.status == 200) {
+                return res.status(200).json({ message: response.message, data: response.data })
+            }
+
+            return res.status(response.status).json({ message: response.message })
+
+        } catch (error) {
+            next()
+        }
+    }
+    async addCustomData(req, res, next) {
+        try {
+           
+            const response = await this.#orderUseCase.addCustomData(req.body,req.files);
+
+            if (response.status == 200) {
+                return res.status(200).json({ message: response.message, data: response.data })
+            }
+
+            return res.status(response.status).json({ message: response.message })
+
+        } catch (error) {
+            next(error)
+        }
+    }
+    async takeAllOrders(req,res,next){
+        try {
+            const userId=req.user
+            const response = await this.#orderUseCase.takeAllOrders(userId);
+
+            if (response.status == 200) {
+                return res.status(200).json({ message: response.message, data: response.data })
+            }
+
+            return res.status(response.status).json({ message: response.message })
+            
         } catch (error) {
             next(error)
         }

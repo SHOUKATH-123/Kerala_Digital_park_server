@@ -21,7 +21,10 @@ const orderSchema = new mongoose.Schema(
         size: { type: Object, default: null },
         paper: { type: Object, default: null },
         finish: { type: Object, default: null },
-        corner: { type: Object, default: null }
+        corner: { type: Object, default: null },
+        userImage:[{type:String}],
+        title:{type:String,default:''},
+        content:{type:String,default:''}
       },
     ],
     shippingAddress: {
@@ -49,6 +52,14 @@ const orderSchema = new mongoose.Schema(
       type: Number,
       required: true,
       default: 0.0,
+    },
+    appliedCoupon:{
+        type:String,
+        default:''
+    },
+    discountAmount:{
+       type:Number,
+       default:0
     },
     totalPrice: {
       type: Number,

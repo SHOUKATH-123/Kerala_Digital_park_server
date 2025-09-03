@@ -53,43 +53,7 @@ productRouter.get('/product/search/:value',adminAuthentication.verifyAdmin,(req,
     adminProductController.searchProduct(req,res,next);
 })
 productRouter.patch('/product/updataDetails',adminAuthentication.verifyAdmin,(req,res,next)=>{
-    adminProductController.updateDetails(req,res,next);
-    
+    adminProductController.updateDetails(req,res,next);  
 })
-
-
-
-
-// import Review from '../../../infrastructure/database/models/productReview.js';
-// import Product from '../../../infrastructure/database/models/productModel.js';
-// productRouter.post('/addReview',async (req,res,next)=>{
-//     req.body.rating=parseInt(req.body.rating)
-//     const {user,rating,comment,product}=req.body
-//     // rating=parseInt(rating)
-//     console.log(req.body);
-
-//     const newReview = await Review.create({ user, rating: rating, comment });
-//     const productData = await Product.findById(product);
-//     if (!productData) {
-//       return res.status(404).json({ message: 'Product not found.' });
-//     }
-
-//     // Add the new review ID to product.reviews
-//     productData.reviews.push(newReview._id);
-
-//     const newRating={
-//           count :productData.rating.count+1,
-//           total :productData.rating.total+newReview.rating,
-//     }
-//     // Update rating count and total
-//     productData.rating = newRating
-   
-
-//     // Save product
-//     await productData.save();
-//     return res.status(200).json('success')
-    
-// })
-
 
 export default productRouter
