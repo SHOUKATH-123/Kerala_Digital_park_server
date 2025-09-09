@@ -247,6 +247,44 @@ class OrderRepositories {
             };
         }
     }
+    async savePaymentStatus(orderId, reqData) {
+        try {
+           
+            const order = await Order.findById(orderId);
+            if (!order) {
+                throw {
+                    status: 404,
+                    message: "Order not found",
+                };
+            }
+            const { id, status, update_time, email_address } = reqData || {};
+
+            // Update order fields
+            order.isPaid = status === "succeeded";
+            order.paidAt = status === "succeeded" ? Date.now() : null;
+            if (status === "succeeded") {
+                order.status = "Processing";
+            }
+            order.paymentResult = {
+                id: id || "",
+                status: status || "failed",
+                update_time: update_time || new Date().toISOString(),
+                email_address: email_address || "",
+            };
+
+            // Save changes
+            const updatedOrder = await order.save();
+            
+            return updatedOrder;
+
+
+        } catch (error) {
+            throw {
+                status: error.status || 500,
+                message: error.message || 'An error occurred while update Payment status in repository.'
+            };
+        }
+    }
 }
 
 export default OrderRepositories;

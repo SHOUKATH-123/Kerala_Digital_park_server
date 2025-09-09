@@ -78,8 +78,8 @@ class OrderController {
     }
     async addCustomData(req, res, next) {
         try {
-           
-            const response = await this.#orderUseCase.addCustomData(req.body,req.files);
+
+            const response = await this.#orderUseCase.addCustomData(req.body, req.files);
 
             if (response.status == 200) {
                 return res.status(200).json({ message: response.message, data: response.data })
@@ -91,9 +91,9 @@ class OrderController {
             next(error)
         }
     }
-    async takeAllOrders(req,res,next){
+    async takeAllOrders(req, res, next) {
         try {
-            const userId=req.user
+            const userId = req.user
             const response = await this.#orderUseCase.takeAllOrders(userId);
 
             if (response.status == 200) {
@@ -101,7 +101,27 @@ class OrderController {
             }
 
             return res.status(response.status).json({ message: response.message })
+
+        } catch (error) {
+            next(error)
+        }
+    }
+    async savePaymentResult(req, res, next) {
+        try {
             
+            
+            const orderId = req.params.orderId;
+            
+            const response = await this.#orderUseCase.savePaymentStatus(orderId,req.body);
+
+            if (response.status == 200) {
+                return res.status(200).json({ message: response.message, data: response.data })
+            }
+
+            return res.status(response.status).json({ message: response.message })
+            
+            
+
         } catch (error) {
             next(error)
         }

@@ -45,5 +45,8 @@ orderRouter.post('/custom-data',userAuthentication.verifyUser,upload.array('imag
 orderRouter.get("/all",userAuthentication.verifyUser,(req,res,next)=>{
     orderController.takeAllOrders(req,res,next);
 })
+orderRouter.put("/:orderId/pay",userAuthentication.verifyUser,(req,res,next)=>{
+     orderController.savePaymentResult(req,res,next);
+})
 
 export default orderRouter;

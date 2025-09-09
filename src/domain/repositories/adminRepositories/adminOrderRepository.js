@@ -53,16 +53,16 @@ class AdminOrderRepository {
                 .skip((currentPage - 1) * perPage)
                 .limit(perPage);
 
-            const totalOrders = await Order.countDocuments();
+            const totalFilteredOrders = await Order.countDocuments(filter);
             const processingOrders = await Order.countDocuments({ isPaid: true, status: "Processing" });
 
             return {
                 success: true,
                 data: orders,
                 pagination: {
-                    totalOrders,
+                    totalFilteredOrders,
                     currentPage,
-                    totalPages: Math.ceil(totalOrders / perPage),
+                    totalPages: Math.ceil(totalFilteredOrders / perPage),
                     processingOrders
                 },
             };
